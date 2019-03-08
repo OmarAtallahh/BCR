@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Support\Facades\Auth;
 
 
-class Admin
+class Doctor
 {
     /**
      * Handle an incoming request.
@@ -17,11 +17,10 @@ class Admin
      */
     public function handle($request, Closure  $next = null ,$guard = null )
     {
-        if (Auth::guard($guard)->check()) {
-            return $next($request);
-            // return redirect('/admin');
-        }else{ 
-            return redirect('main.loginAdmin');
+        if (Auth::guard($guard)->guest()) {
+            return redirect(route('loginViewDoctor'));
         }
+
+        return $next($request);
     }
 }

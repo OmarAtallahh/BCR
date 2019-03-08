@@ -2,48 +2,44 @@
 
 namespace App\Http\Controllers\admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\AdminController;
-use App\Admin;
-
-use Session;
-
-//use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 
 class LoginAdminController extends Controller
 {
     public function login()
-	{
-        return view('admin.loginAdmin');
-        // error_log('logined');
+    {
+        if (!auth('admin')->check()) {
+            return view('admin.loginAdmin');
+        }
 
+        return redirect(route('adminHomePage'));
     }
 
     public function dologin(Request $request)
-	{
-		// return 'done';
-		// dd($request);
-		$rememberme = request('rememberme') == 1?true:false;
-		if (auth()->guard('admin')->attempt(['email'=>request('email'), 'password'=>request('password')] , $rememberme))
-		{
-            // return redirect()->route('admin');
+    {
+        if (auth('admin')->check()) {
             return view('admin.index');
+        }
 
-		}
-		else
-		  {
-			//   \Auth::user()->
-            session()->flash('error', trans('admin.inccorrect_information_login'));
-              return redirect()->back();
+        $validator = \Validator::make($request->all(), [
+            'email' => 'required',
+            'password' => 'required',
+        ]);
 
-		  }
-
+        if ($validator->fails()) {
+            return back()->withInput()->withErrors($validator->errors()->all());
+        }
+        $rememberMe = request('rememberme') == 1 ? true : false;
+        if (!auth()->guard('admin')->attempt(['email' => request('email'), 'password' => request('password')], $rememberMe)) {
+            return redirect()->back()->with(['danger' => 'Invalid Email Or Password ']);
+        }
+        return redirect(route('adminHomePage'));
     }
 
     public function logout()
-	{
-		auth()->guard('admin')->logout();
-		return redirect(url('admin.loginAdmin'));
-	}
+    {
+        auth()->guard('admin')->logout();
+        return redirect(route('adminHomePage'));
+    }
 }

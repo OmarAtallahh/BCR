@@ -38,13 +38,13 @@
 
 
 <div class="main">
-    
+
       <form class="form1"><br/><br/><br/><br/>
       <a class="submit" href="/admin/loginAdmin" align="center">Admin</a><br/><br/><br/><br/><br/><br/>
 
         <a class="submit" href="/main/loginDoctor" align="center">Doctor</a>
     </form>
- 
+
 </div>
 
 

@@ -5,23 +5,21 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 
-
 class Admin
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Closure $next
      * @return mixed
      */
-    public function handle($request, Closure  $next = null ,$guard = null )
+    public function handle($request, Closure $next = null, $guard = null)
     {
-        if (Auth::guard($guard)->check()) {
-            return $next($request);
-            // return redirect('/admin');
-        }else{ 
-            return redirect('admin.loginAdmin');
+        if (Auth::guard($guard)->guest()) {
+            return redirect(route('loginViewAdmin'));
         }
+
+        return $next($request);
     }
 }
